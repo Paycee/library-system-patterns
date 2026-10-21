@@ -1,0 +1,33 @@
+# Kompajlirani fajlovi
+*.class
+*.jar
+*.war
+*.log
+
+# Build folderi
+bin/
+out/
+target/
+build/
+.gradle/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# NetBeans
+nbproject/private/
+dist/
+nbbuild/
+
+# VS Code
+.vscode/
+
+# Sistemski fajlovi
+.DS_Store
+Thumbs.db

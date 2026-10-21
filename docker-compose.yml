@@ -1,0 +1,40 @@
+# Pokreće MySQL u Docker kontejneru.
+#   docker compose up -d     -> pokreni (u pozadini)
+#   docker compose down      -> zaustavi (podaci ostaju)
+#   docker compose down -v   -> zaustavi i OBRIŠI podatke (sledeći start pravi bazu iz početka)
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: biblioteka-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: biblioteka
+      MYSQL_USER: biblioteka
+      MYSQL_PASSWORD: biblioteka
+    ports:
+      # levo je port na TVOM računaru, desno port u kontejneru.
+      # 3307 da se ne sudari sa MySQL-om koji možda već imaš instaliran na 3306.
+      - "3307:3306"
+    volumes:
+      # Skripte iz ovog foldera MySQL izvršava SAMO pri prvom pokretanju (kad je baza prazna)
+      - ./src/main/resources/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./src/main/resources/data.sql:/docker-entrypoint-initdb.d/2-data.sql
+      # Podaci baze se čuvaju u volume-u, pa prežive restart kontejnera
+      - biblioteka-data:/var/lib/mysql
+
+  mongo:
+    image: mongo:7.0
+    container_name: biblioteka-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    ports:
+      # 27018 da se ne sudari sa MongoDB-om koji možda već imaš na 27017
+      - "27018:27017"
+    volumes:
+      - ./src/main/resources/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      - biblioteka-mongo-data:/data/db
+
+volumes:
+  biblioteka-data:
+  biblioteka-mongo-data:
